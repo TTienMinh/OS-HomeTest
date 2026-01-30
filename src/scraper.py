@@ -1,16 +1,16 @@
+import os
 import re
 import requests
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
 from requests.auth import HTTPBasicAuth
 from markdownify import markdownify as md
 
-import os
-from dotenv import load_dotenv
 load_dotenv()
 
-email_address = os.getenv('ZENDESK_EMAIL')
-api_token = os.getenv('ZENDESK_API_TOKEN')
-url = f"https://support.optisigns.com/api/v2/help_center/articles.json?per_page=40"
+ZENDESK_EMAIL = os.getenv('ZENDESK_EMAIL')
+ZENDESK_API_TOKEN = os.getenv('ZENDESK_API_TOKEN')
+URL = f"https://support.optisigns.com/api/v2/help_center/articles.json?per_page=40"
 OUTPUT_DIR = "scraped_articles"
 
 
@@ -23,12 +23,12 @@ def scrape_articles():
     }
 
     # Use basic authentication
-    auth = HTTPBasicAuth(f'{email_address}/token', api_token)
+    auth = HTTPBasicAuth(f'{ZENDESK_EMAIL}/token', ZENDESK_API_TOKEN)
 
     try:
         response = requests.request(
             "GET",
-            url,
+            URL,
             auth=auth,
             headers=headers
         )
