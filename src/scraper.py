@@ -1,6 +1,7 @@
 import os
 import re
 import requests
+from typing import Dict, Any, List
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from requests.auth import HTTPBasicAuth
@@ -14,7 +15,7 @@ URL = f"https://support.optisigns.com/api/v2/help_center/articles.json?per_page=
 OUTPUT_DIR = "scraped_articles"
 
 
-def scrape_articles():
+def scrape_articles() -> List[Dict[str, Any]]:
     """
     Fetch articles from Zendesk Help Center API.
     """
@@ -57,7 +58,7 @@ def clean_html(html_content):
     return str(soup)
 
 
-def save_as_markdown(article):
+def save_as_markdown(article: Dict[str, Any], output_dir: str = OUTPUT_DIR) -> str:
     """
     Converts article HTML to Markdown and saves it.
     """
@@ -82,28 +83,34 @@ def save_as_markdown(article):
         f"{markdown_content}"
     )
 
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    file_path = os.path.join(OUTPUT_DIR, filename)
+    os.makedirs(output_dir, exist_ok=True)
+    file_path = os.path.join(output_dir, filename)
     
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(final_content)
     
-    return filename
+    return {
+        "slug": slug,
+        "file_path": file_path,
+        "markdown_content": final_content,
+        "url": html_url
+    }
 
 
-def run_scraper():
+def run_scraper(output_dir: str = OUTPUT_DIR) -> int:
     articles = scrape_articles()
     
-    count = 0
+    saved_list = []
     for article in articles:
         if article.get("draft") is True or not article.get("body"):
             continue
             
-        saved_name = save_as_markdown(article)
-        count += 1
-        # print(f"Saved: {saved_name}")
+        saved_info = save_as_markdown(article, output_dir=output_dir)
+        saved_list.append(saved_info)
         
-    # print(f"\n--- Scraping Complete. {count} files saved to '{OUTPUT_DIR}/' ---")
+        # print(f"Saved: {saved_info['slug']}")
+
+    return saved_list
 
 
 if __name__ == "__main__":
