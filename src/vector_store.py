@@ -25,11 +25,11 @@ def create_vector_store(vector_store_name: str = VECTOR_STORE_NAME):
     return vector_store.id
 
 
-def upload_file_to_vector_store(vector_store_id, files_path: str = DATA_DIR):
+def upload_file_to_vector_store(vector_store_id: str, file_paths: list):
     """
     Upload file to vector store
     """
-    if not os.path.exists(files_path):
+    if not file_paths:
         print("No files found to upload.")
         return {
             'total': 0,
@@ -40,11 +40,11 @@ def upload_file_to_vector_store(vector_store_id, files_path: str = DATA_DIR):
 
     file_streams = []
 
-    for file in Path(files_path).iterdir():
-        if file.is_file():
-            file_streams.append(file.open("rb"))
+    for file_path in file_paths:
+        if os.path.exists(file_path):
+            file_streams.append(open(file_path, "rb"))
         else:
-            print(f"Skipping {file}, not a file.")
+            print(f"Skipping {file_path}, not a file.")
     
     if not file_streams:
         print("No valid files to upload.")
@@ -85,17 +85,17 @@ def upload_file_to_vector_store(vector_store_id, files_path: str = DATA_DIR):
         }
 
 
-def run_vector_store_setup():
+def run_vector_store_setup(file_paths: list):
     """
     Run the complete vector store setup
     """
     vector_store_id = create_vector_store()
     vector_store_batches = upload_file_to_vector_store(
         vector_store_id=vector_store_id,
-        files_path=DATA_DIR
+        file_paths=file_paths
     )
     return vector_store_batches
 
 
 if __name__ == "__main__":
-    run_vector_store_setup()
+    run_vector_store_setup([os.path.join(DATA_DIR, f) for f in os.listdir(DATA_DIR) if f.endswith(".md")])
