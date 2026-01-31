@@ -39,13 +39,14 @@ jobs:
           path: scraper.log
           overwrite: true
       
-      - name: Save State to Repo
+      - name: Set up git user
         run: |
-          git config --global user.name "OptiBot Action"
-          git config --global user.email "action@github.com"
-          
-          # Check if the state file exists and add it
-          git add articles_state.json
-          
-          # Commit and push only if there are changes
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Update state file [skip ci]" && git push)
+            git config --global user.name 'github-actions[bot]'
+            git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      - name: Commit and push changes
+        env:
+            GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+            git add .
+            git commit -m "Update state file [skip ci]" || echo "No changes to commit"
+            git push https://x-access-token:${GH_TOKEN}@github.com/TTienMinh/OS-HomeTest.git HEAD:${{ github.ref }}
