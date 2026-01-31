@@ -11,11 +11,11 @@ load_dotenv()
 
 ZENDESK_EMAIL = os.getenv('ZENDESK_EMAIL')
 ZENDESK_API_TOKEN = os.getenv('ZENDESK_API_TOKEN')
-URL = f"https://support.optisigns.com/api/v2/help_center/articles.json?per_page=40"
+URL = f"https://support.optisigns.com/api/v2/help_center/articles.json?per_page="
 OUTPUT_DIR = "scraped_articles"
 
 
-def scrape_articles() -> List[Dict[str, Any]]:
+def scrape_articles(limit: int = 40) -> List[Dict[str, Any]]:
     """
     Fetch articles from Zendesk Help Center API.
     """
@@ -29,7 +29,7 @@ def scrape_articles() -> List[Dict[str, Any]]:
     try:
         response = requests.request(
             "GET",
-            URL,
+            URL+str(limit),
             auth=auth,
             headers=headers
         )
@@ -97,8 +97,8 @@ def save_as_markdown(article: Dict[str, Any], output_dir: str = OUTPUT_DIR) -> s
     }
 
 
-def run_scraper(output_dir: str = OUTPUT_DIR) -> List[Dict[str, Any]]:
-    articles = scrape_articles()
+def run_scraper(output_dir: str = OUTPUT_DIR, limit: int = 40) -> List[Dict[str, Any]]:
+    articles = scrape_articles(limit=limit)
     
     saved_list = []
     for article in articles:
