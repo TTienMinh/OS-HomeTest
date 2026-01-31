@@ -11,7 +11,7 @@ DATA_DIR = "scraped_articles"
 VECTOR_STORE_NAME = "OptiBot-Knowledge-Base"
 
 
-def create_vector_store(vector_store_name: str = VECTOR_STORE_NAME):
+def create_vector_store(vector_store_name: str = VECTOR_STORE_NAME) -> str:
     """
     Create a vector store
     """
@@ -25,7 +25,7 @@ def create_vector_store(vector_store_name: str = VECTOR_STORE_NAME):
     return vector_store.id
 
 
-def upload_file_to_vector_store(vector_store_id: str, file_paths: list):
+def upload_file_to_vector_store(vector_store_id: str, file_paths: list) -> dict:
     """
     Upload file to vector store
     """
@@ -38,6 +38,7 @@ def upload_file_to_vector_store(vector_store_id: str, file_paths: list):
             'status': 'skipped'
         }
 
+    # Open files for upload
     file_streams = []
 
     for file_path in file_paths:
@@ -56,11 +57,12 @@ def upload_file_to_vector_store(vector_store_id: str, file_paths: list):
         }
 
     try:
+        # Batch upload to vector store
         file_batch = client.vector_stores.file_batches.upload_and_poll(
             vector_store_id=vector_store_id,
             files=file_streams
         )
-        print(f"Upload status: {file_batch.status}")
+        # print(f"Upload status: {file_batch.status}")
         
         stats = {
             'total': file_batch.file_counts.total,
@@ -71,7 +73,7 @@ def upload_file_to_vector_store(vector_store_id: str, file_paths: list):
             'status': file_batch.status
         }
 
-        print("File batch stats:", stats)
+        # print("File batch stats:", stats)
         return stats
     except Exception as e:
         print(f"Failed to add files to vector store {vector_store_id}: {e}")
@@ -85,7 +87,7 @@ def upload_file_to_vector_store(vector_store_id: str, file_paths: list):
         }
 
 
-def run_vector_store_setup(file_paths: list):
+def run_vector_store_setup(file_paths: list) -> dict:
     """
     Run the complete vector store setup
     """

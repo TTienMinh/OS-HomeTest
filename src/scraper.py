@@ -36,7 +36,7 @@ def scrape_articles() -> List[Dict[str, Any]]:
         response.raise_for_status()
         data = response.json()
         articles = data.get("articles", [])
-        print(f"Fetched {len(articles)} articles.")
+        # print(f"Fetched {len(articles)} articles.")
     except requests.exceptions.RequestException as e:
         print(f"Error fetching articles: {e}")
         articles = []
@@ -97,7 +97,7 @@ def save_as_markdown(article: Dict[str, Any], output_dir: str = OUTPUT_DIR) -> s
     }
 
 
-def run_scraper(output_dir: str = OUTPUT_DIR) -> int:
+def run_scraper(output_dir: str = OUTPUT_DIR) -> List[Dict[str, Any]]:
     articles = scrape_articles()
     
     saved_list = []
@@ -107,7 +107,7 @@ def run_scraper(output_dir: str = OUTPUT_DIR) -> int:
             
         saved_info = save_as_markdown(article, output_dir=output_dir)
         saved_list.append(saved_info)
-        
+
         # print(f"Saved: {saved_info['slug']}")
 
     return saved_list
