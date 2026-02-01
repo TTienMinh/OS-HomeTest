@@ -41,6 +41,8 @@ python src/vector_store.py   # Phase 2: Upload to vector store
 
 **Last Run**: https://github.com/TTienMinh/OS-HomeTest/actions/runs/21556659446/job/62114024936
 
+**Chunking Strategy**: Using OpenAI's auto chunking (default), which is 800 token chunks with 400 token overlap.
+
 ## OpenAI Assistant Screenshot
 
 I cannot provide Playground screenshot because my account is not payment-bound and cannot access Playground.
