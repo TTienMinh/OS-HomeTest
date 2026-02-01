@@ -43,6 +43,4 @@ python src/vector_store.py   # Phase 2: Upload to vector store
 
 ## OpenAI Assistant Screenshot
 
-### Test Question: "How do I add a YouTube video?"
-
-![Assistant Response](screenshots/playground-test.png)
+I cannot provide Playground screenshot because my account is not payment-bound and cannot access Playground.
